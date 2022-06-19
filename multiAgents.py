@@ -76,25 +76,30 @@ class ReflexAgent(Agent):
         "*** YOUR CODE HERE ***"
         """
         Features of the evaluation function:
-        1. Distance from pacman to the clostest food
-                - the closer, the better
-                - linear relationship
-        2. Quantity of the food on the board
+        1. Quantity of the food on the board
                 - the fewer, the better
+                - linear relationship
+        2. Distance from pacman to the clostest food
+                - the closer, the better
                 - linear relationship
         3. Distance from pacman to the ghosts
                 - the closer, the worse
                 - relationship is -1/x, where x is the distance
+        4. Game Score
         """
         from util import manhattanDistance
-        #print("successorGameState")
-        #print(str(successorGameState))
-        #print("newPos")
-        #print(str(newPos))
-        #print("newFood")
-        #print(str(newFood))
+        
+        # 1. Quantity of the food on the board
+        w2 = 1
+        f2 = (lambda x: -x)
+        quantity = 0
+        for x in range(newFood.width):
+            for y in range(newFood.height):
+                if newFood[x][y]:
+                    quantity += 1
+        val2 = f2(quantity)
 
-        # 1. Distance from pacman to the clostest food
+        # 2. Distance from pacman to the clostest food
         w1 = 1
         f1 = (lambda x: -x)
         min_dist = 99999
@@ -105,33 +110,27 @@ class ReflexAgent(Agent):
                     manh_dist = manhattanDistance(newPos, (x, y))
                     if manh_dist < min_dist:
                         min_dist = manh_dist
-        val1 = f1(min_dist)
-
-        # Quantity of the food on the board
-        w2 = 1
-        f2 = (lambda x: -x)
-        quantity = 0
-        for x in range(newFood.width):
-            for y in range(newFood.height):
-                if newFood[x][y]:
-                    quantity += 1
-        val2 = f2(quantity)
+        if quantity == 0: # if there is no food on the board, there is no distance to the closest food
+            val1 = 0
+        else:
+            val1 = f1(min_dist)
 
         # 3. Distance from pacman to the ghosts
-        w3 = 1
+        w3 = 5
         f3 = (lambda x: -1/x)
         val3 = 0
         for ghost in newGhostStates:
-            val3 += f3(manhattanDistance(newPos, ghost.getPosition()))
+            manh_dist = manhattanDistance(newPos, ghost.getPosition())
+            if manh_dist > 0:
+                val3 += f3(manh_dist)
+            else:
+                val3 = -99999
 
-        print("val1")
-        print(val1)
-        print("val2")
-        print(val2)
-        print("val3")
-        print(val3)
-        print()
-        return successorGameState.getScore()
+        # 4. Game Score
+        w4 = 1
+        val4 = successorGameState.getScore()
+
+        return w1 * val1 + w2 * val2 + w3 * val3 + w4 * val4
 
 def scoreEvaluationFunction(currentGameState):
     """
