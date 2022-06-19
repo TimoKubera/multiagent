@@ -74,6 +74,63 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
+        """
+        Features of the evaluation function:
+        1. Distance from pacman to the clostest food
+                - the closer, the better
+                - linear relationship
+        2. Quantity of the food on the board
+                - the fewer, the better
+                - linear relationship
+        3. Distance from pacman to the ghosts
+                - the closer, the worse
+                - relationship is -1/x, where x is the distance
+        """
+        from util import manhattanDistance
+        #print("successorGameState")
+        #print(str(successorGameState))
+        #print("newPos")
+        #print(str(newPos))
+        #print("newFood")
+        #print(str(newFood))
+
+        # 1. Distance from pacman to the clostest food
+        w1 = 1
+        f1 = (lambda x: -x)
+        min_dist = 99999
+
+        for x in range(newFood.width):
+            for y in range(newFood.height):
+                if newFood[x][y]:
+                    manh_dist = manhattanDistance(newPos, (x, y))
+                    if manh_dist < min_dist:
+                        min_dist = manh_dist
+        val1 = f1(min_dist)
+
+        # Quantity of the food on the board
+        w2 = 1
+        f2 = (lambda x: -x)
+        quantity = 0
+        for x in range(newFood.width):
+            for y in range(newFood.height):
+                if newFood[x][y]:
+                    quantity += 1
+        val2 = f2(quantity)
+
+        # 3. Distance from pacman to the ghosts
+        w3 = 1
+        f3 = (lambda x: -1/x)
+        val3 = 0
+        for ghost in newGhostStates:
+            val3 += f3(manhattanDistance(newPos, ghost.getPosition()))
+
+        print("val1")
+        print(val1)
+        print("val2")
+        print(val2)
+        print("val3")
+        print(val3)
+        print()
         return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState):
