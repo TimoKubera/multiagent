@@ -86,9 +86,11 @@ class ReflexAgent(Agent):
                 - the closer, the worse
                 - relationship is -1/x, where x is the distance
         4. Game Score
+                - the higher, the better
+                - linear relationship
         """
         from util import manhattanDistance
-        
+
         # 1. Quantity of the food on the board
         w2 = 1
         f2 = (lambda x: -x)
