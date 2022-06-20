@@ -208,7 +208,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
         def max_value(state, currDepth, agent=0):
             nonlocal takeAction
             v = -9999
-            currDepth += 1
             agent += 1
             for action in state.getLegalActions(agent):
                 new_v = value(state.generateSuccessor(agent, action), currDepth, agent)
@@ -221,11 +220,13 @@ class MinimaxAgent(MultiAgentSearchAgent):
         def min_value(state, currDepth, agent):
             v = 9999
             agent = (agent + 1) % num_agents
+            if agent == 0:
+                currDepth += 1
             for action in state.getLegalActions(agent):
                 v = min(v, value(state.generateSuccessor(agent, action), currDepth, agent))
             return v
 
-        currDepth = -1
+        currDepth = 0
         value(gameState, currDepth)
         return takeAction
 
