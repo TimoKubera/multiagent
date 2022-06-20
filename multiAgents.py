@@ -193,27 +193,50 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        def value(state, agent=0):
-            if state.isWin() or state.isLose():
+        num_agents = gameState.getNumAgents()
+        action = ""
+        print("Num Agents")
+        print(num_agents)
+        print("Depth")
+        print(self.depth)
+        print()
+
+        def value(state, currDepth, agent=0):
+            if state.isWin() or state.isLose() or currDepth == self.depth:
+                if state.isWin(): print("is win")
+                elif state.isLose(): print("is lose")
+                elif currDepth == self.depth: print("currDepth == self.depth")
+                else: print("error")
+                print()
                 return self.evaluationFunction(state)
             if agent == 0:
-                return max_value(state)
+                return max_value(state, currDepth)
             else:
-                return min_value(state)
+                return min_value(state, currDepth, agent)
             
-        def max_value(state, agent=0):
+        def max_value(state, currDepth, agent=0):
+            print("Max Value")
+            print("CurrDepth")
+            print(currDepth)
+            print()
             v = -9999
-            for action in gameState.getLegalActions(agent):
-                v = max(v, value(gameState.generateSuccessor(agent, action))) # always agent 0
+            currDepth += 1
+            agent += 1
+            for action in state.getLegalActions(agent):
+                v = max(v, value(state.generateSuccessor(agent, action), currDepth, agent))
             return v
         
-        def min_value(state, agent):
+        def min_value(state, currDepth, agent):
+            print("Min value")
+            print()
             v = 9999
-            for action in gameState.getLegalActions(agent):
-                v = min(v, value(gameState.generateSuccessor(agent, action))) # never agent 0
+            agent = (agent + 1) % num_agents
+            for action in state.getLegalActions(agent):
+                v = min(v, value(state.generateSuccessor(agent, action), currDepth, agent))
             return v
 
-        util.raiseNotDefined()
+        currDepth = 0
+        return value(gameState, currDepth)
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
