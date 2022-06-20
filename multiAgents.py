@@ -12,6 +12,7 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
+from re import X
 from util import manhattanDistance
 from game import Directions
 import random, util
@@ -194,20 +195,10 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         num_agents = gameState.getNumAgents()
-        action = ""
-        print("Num Agents")
-        print(num_agents)
-        print("Depth")
-        print(self.depth)
-        print()
+        takeAction = ""
 
         def value(state, currDepth, agent=0):
             if state.isWin() or state.isLose() or currDepth == self.depth:
-                if state.isWin(): print("is win")
-                elif state.isLose(): print("is lose")
-                elif currDepth == self.depth: print("currDepth == self.depth")
-                else: print("error")
-                print()
                 return self.evaluationFunction(state)
             if agent == 0:
                 return max_value(state, currDepth)
@@ -215,28 +206,28 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 return min_value(state, currDepth, agent)
             
         def max_value(state, currDepth, agent=0):
-            print("Max Value")
-            print("CurrDepth")
-            print(currDepth)
-            print()
+            nonlocal takeAction
             v = -9999
             currDepth += 1
             agent += 1
             for action in state.getLegalActions(agent):
-                v = max(v, value(state.generateSuccessor(agent, action), currDepth, agent))
+                new_v = value(state.generateSuccessor(agent, action), currDepth, agent)
+                if new_v > v:
+                    v = new_v
+                    if currDepth == 0:
+                        takeAction = action
             return v
         
         def min_value(state, currDepth, agent):
-            print("Min value")
-            print()
             v = 9999
             agent = (agent + 1) % num_agents
             for action in state.getLegalActions(agent):
                 v = min(v, value(state.generateSuccessor(agent, action), currDepth, agent))
             return v
 
-        currDepth = 0
-        return value(gameState, currDepth)
+        currDepth = -1
+        value(gameState, currDepth)
+        return takeAction
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
