@@ -275,7 +275,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 currDepth += 1
             for action in state.getLegalActions(agent):
                 v = min(v, value(state.generateSuccessor(agent, action), alpha, beta, currDepth, next_agent))
-                if v < alpha:
+                if v < alpha: # Warum gibt autograder 5/5 pkt? Müsste der Code hier nicht nur dann ausgeführt werden, wenn der nächste Agent der max Agent ist?
                     return v
                 beta = min(beta, v)
             return v
