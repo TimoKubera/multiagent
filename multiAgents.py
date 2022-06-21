@@ -376,7 +376,7 @@ def betterEvaluationFunction(currentGameState):
         val1 = f1(min_dist)
 
     # 3. Distance from pacman to the ghosts
-    w3 = 5
+    w3 = 3
     f3 = (lambda x: -1/x)
     val3 = 0
     for ghost in newGhostStates:
