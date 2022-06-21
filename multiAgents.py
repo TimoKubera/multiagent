@@ -343,7 +343,54 @@ def betterEvaluationFunction(currentGameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    newPos = currentGameState.getPacmanPosition()
+    newFood = currentGameState.getFood()
+    newGhostStates = currentGameState.getGhostStates()
+    #newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+    from util import manhattanDistance
+
+    # 1. Quantity of the food on the board
+    w2 = 1
+    f2 = (lambda x: -x)
+    quantity = 0
+    for x in range(newFood.width):
+        for y in range(newFood.height):
+            if newFood[x][y]:
+                quantity += 1
+    val2 = f2(quantity)
+
+    # 2. Distance from pacman to the clostest food
+    w1 = 1
+    f1 = (lambda x: -x)
+    min_dist = 99999
+
+    for x in range(newFood.width):
+        for y in range(newFood.height):
+            if newFood[x][y]:
+                manh_dist = manhattanDistance(newPos, (x, y))
+                if manh_dist < min_dist:
+                    min_dist = manh_dist
+    if quantity == 0: # if there is no food on the board, there is no distance to the closest food
+        val1 = 0
+    else:
+        val1 = f1(min_dist)
+
+    # 3. Distance from pacman to the ghosts
+    w3 = 5
+    f3 = (lambda x: -1/x)
+    val3 = 0
+    for ghost in newGhostStates:
+        manh_dist = manhattanDistance(newPos, ghost.getPosition())
+        if manh_dist > 0:
+            val3 += f3(manh_dist)
+        else:
+            val3 = -99999
+
+    # 4. Game Score
+    w4 = 1
+    val4 = currentGameState.getScore()
+
+    return w1 * val1 + w2 * val2 + w3 * val3 + w4 * val4
 
 # Abbreviation
 better = betterEvaluationFunction
