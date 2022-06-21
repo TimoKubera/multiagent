@@ -90,7 +90,6 @@ class ReflexAgent(Agent):
                 - the higher, the better
                 - linear relationship
         """
-        from util import manhattanDistance
 
         # 1. Quantity of the food on the board
         w2 = 1
@@ -347,7 +346,6 @@ def betterEvaluationFunction(currentGameState):
     newFood = currentGameState.getFood()
     newGhostStates = currentGameState.getGhostStates()
     #newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-    from util import manhattanDistance
 
     # 1. Quantity of the food on the board
     w2 = 1
