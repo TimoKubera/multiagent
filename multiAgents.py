@@ -92,18 +92,18 @@ class ReflexAgent(Agent):
         """
 
         # 1. Quantity of the food on the board
-        w2 = 1
-        f2 = (lambda x: -x)
+        w1 = 1
+        f1 = (lambda x: -x)
         quantity = 0
         for x in range(newFood.width):
             for y in range(newFood.height):
                 if newFood[x][y]:
                     quantity += 1
-        val2 = f2(quantity)
+        val1 = f1(quantity)
 
         # 2. Distance from pacman to the clostest food
-        w1 = 1
-        f1 = (lambda x: -x)
+        w2 = 1
+        f2 = (lambda x: -x)
         min_dist = 99999
 
         for x in range(newFood.width):
@@ -113,9 +113,9 @@ class ReflexAgent(Agent):
                     if manh_dist < min_dist:
                         min_dist = manh_dist
         if quantity == 0: # if there is no food on the board, there is no distance to the closest food
-            val1 = 0
+            val2 = 0
         else:
-            val1 = f1(min_dist)
+            val2 = f2(min_dist)
 
         # 3. Distance from pacman to the ghosts
         w3 = 5
@@ -339,7 +339,22 @@ def betterEvaluationFunction(currentGameState):
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    We are using the same features as in task 1, but this time we are evaluating the states, 
+    instead of evaluating the actions.
+
+    Features of the evaluation function:
+    1. Quantity of the food on the board
+            - the fewer, the better
+            - linear relationship
+    2. Distance from pacman to the clostest food
+            - the closer, the better
+            - linear relationship
+    3. Distance from pacman to the ghosts
+            - the closer, the worse
+            - relationship is -1/x, where x is the distance
+    4. Game Score
+            - the higher, the better
+            - linear relationship
     """
     "*** YOUR CODE HERE ***"
     newPos = currentGameState.getPacmanPosition()
@@ -348,18 +363,18 @@ def betterEvaluationFunction(currentGameState):
     #newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
     # 1. Quantity of the food on the board
-    w2 = 1
-    f2 = (lambda x: -x)
+    w1 = 1
+    f1 = (lambda x: -x)
     quantity = 0
     for x in range(newFood.width):
         for y in range(newFood.height):
             if newFood[x][y]:
                 quantity += 1
-    val2 = f2(quantity)
+    val1 = f1(quantity)
 
     # 2. Distance from pacman to the clostest food
-    w1 = 1
-    f1 = (lambda x: -x)
+    w2 = 1
+    f2 = (lambda x: -x)
     min_dist = 99999
 
     for x in range(newFood.width):
@@ -369,9 +384,9 @@ def betterEvaluationFunction(currentGameState):
                 if manh_dist < min_dist:
                     min_dist = manh_dist
     if quantity == 0: # if there is no food on the board, there is no distance to the closest food
-        val1 = 0
+        val2 = 0
     else:
-        val1 = f1(min_dist)
+        val2 = f2(min_dist)
 
     # 3. Distance from pacman to the ghosts
     w3 = 3
